@@ -1,11 +1,13 @@
 package repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import entity.CustomerEntity;
+import entity.OrderEntity;
 import util.SessionFactoryConfiguration;
 
 public class CustomerRepository {
@@ -73,11 +75,23 @@ public class CustomerRepository {
         Object[] data = (Object[]) query.uniqueResult();
         return data;
     }
-    //SELECT province, Count(CustID), SUM(salary), AVG(salary), MAX(salary), MIN(salary) FROM Customer GROUP BY province;
+
+    // SELECT province, Count(CustID), SUM(salary), AVG(salary), MAX(salary),
+    // MIN(salary) FROM Customer GROUP BY province;
     public List<Object[]> getCustomerSummeryByProvince() {
         String hql = "SELECT province, Count(CustID), SUM(salary), AVG(salary), MAX(salary), MIN(salary) FROM CustomerEntity GROUP BY province";
         Query query = session.createQuery(hql);
-        List<Object[]> data =  query.list();
+        List<Object[]> data = query.list();
         return data;
+    }
+
+    public List<OrderEntity> getOrdersBeforeAndProvince(Date date, String province) {
+        String hql = "SELECT ord FROM CustomerEntity AS cust INNER JOIN cust.orderEntities AS ord WHERE cust.province =:province AND ord.date<:date";
+        Query query = session.createQuery(hql);
+        query.setParameter("province", province);
+        query.setParameter("date", date);
+
+        List<OrderEntity> orderEntities = query.list();
+        return orderEntities;
     }
 }

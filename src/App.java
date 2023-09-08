@@ -1,10 +1,13 @@
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.query.Query;
 
 import entity.CustomerEntity;
+import entity.OrderEntity;
 import repository.CustomerRepository;
 
 public class App {
@@ -56,12 +59,19 @@ public class App {
          * System.out.println(Arrays.toString(data));
          */
         ///////////////////////////////////////////////////////////////////////////
-        List<Object[]> data = customerRepository.getCustomerSummeryByProvince();
-        for (Object[] row : data) {
-            System.out.println(Arrays.toString(row));
-        }
+        /*
+         * List<Object[]> data = customerRepository.getCustomerSummeryByProvince();
+         * for (Object[] row : data) {
+         * System.out.println(Arrays.toString(row));
+         * }
+         */
         ///////////////////////////////////////////////////////////////////////////
-
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse("2009-01-01");
+        List<OrderEntity> orderEntities = customerRepository.getOrdersBeforeAndProvince(date , "Western");
+        orderEntities.forEach(e->{
+            System.out.println(e.toString());
+        });
     }
 
 }
